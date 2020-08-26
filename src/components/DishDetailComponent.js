@@ -6,17 +6,19 @@ import {Control, LocalForm, Errors} from 'react-redux-form';
 
 function RenderDish({ dish }){
         return (
-          <Card>
+          <div className="col-12 col-md-5 m-1">
+            <Card>
               <CardImg width="100%" src={dish.image} alt={dish.name}/>
               <CardBody>
-                  <CardTitle className="h5"> {dish.name} </CardTitle>
-                  <CardText> {dish.description} </CardText>
+                <CardTitle className="h5"> {dish.name} </CardTitle>
+                <CardText> {dish.description} </CardText>
               </CardBody>
-          </Card>
+            </Card>
+          </div>
         );
 };
   
- function RenderComments({Comments}){
+ function RenderComments({Comments, addComment, dishId}){
     if (Comments!== null){
         const comment = Comments.map((comment) => {
         return(
@@ -32,7 +34,7 @@ function RenderDish({ dish }){
               <ul className="list-unstyled">
                 {comment}
               </ul>
-              <CommentForm/>
+              <CommentForm dishId={dishId} addComment={addComment} />
             </div>
           );
     }else{
@@ -57,10 +59,10 @@ const DishDetail = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-12 col-md-5 m-1">
-              <RenderDish dish={props.dish}/>
-            </div>
-            <RenderComments Comments={props.comments}/>
+            <RenderDish dish={props.dish}/>
+            <RenderComments Comments={props.comments}
+              addComment={props.addComment}
+              dishId={props.dish.id} />
           </div>
         </div>
       );
@@ -92,8 +94,9 @@ class CommentForm extends Component {
 
   handleSubmit(values){
     this.toggleModal();
-    console.log("Current State is : "+JSON.stringify(values));
-    alert("Current State is : "+JSON.stringify(values));
+    this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+    // console.log("Current State is : "+JSON.stringify(values));
+    // alert("Current State is : "+JSON.stringify(values));
 }
 
   render(){
